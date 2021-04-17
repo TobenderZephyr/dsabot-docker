@@ -1,0 +1,30 @@
+name: Build Image on Push
+ 
+on: [repository_dispatch]
+ 
+jobs:
+  Build Image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository    
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.event.client_payload.repository }}
+          ref: ${{ github.event.client_payload.ref }}
+
+      - name: Build specific Version
+        if: github.event.client_payload.version
+        uses: docker/build-push-action@v2.4.0
+        with:
+          file: Dockerfile
+          labels: ${{ github.event.client_payload.version }}
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ github.event.client_payload.version }}
+          
+      - name: Build latest
+        uses: docker/build-push-action@v2.4.0
+        with:
+          file: Dockerfile
+          labels: latest
+          platforms: linux/amd64,linux/arm64
+          tags: latest
