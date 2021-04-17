@@ -14,16 +14,22 @@ jobs:
 
       - name: Build specific Version
         if: github.event.client_payload.version
-        uses: docker/build-push-action@v2.4.0
+        uses: dawidd6/action-docker-publish-changed@v3
+        #uses: docker/build-push-action@v2.4.0
         with:
+          username: ${{secrets.USER}}
+          password: ${{secrets.PASS}}
           file: Dockerfile
           labels: ${{ github.event.client_payload.version }}
           platforms: linux/amd64,linux/arm64
           tags: ${{ github.event.client_payload.version }}
           
       - name: Build latest
-        uses: docker/build-push-action@v2.4.0
+        uses: dawidd6/action-docker-publish-changed@v3
+        #uses: docker/build-push-action@v2.4.0
         with:
+          username: ${{secrets.USER}}
+          password: ${{secrets.PASS}}
           file: Dockerfile
           labels: latest
           platforms: linux/amd64,linux/arm64
